@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <title>Dự đoán kết quả bóng đá</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <style>
+  .left {
+  font-size: 15px;
+  text-align: left;
+  background-color: #f9f9fa;
+  }
+  .bold {
+  font-weight: bold;
+  }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-sm bg-light navbar-light">
+  <div class="container-fluid">
+     <ul class="nav navbar-nav">
+        <li><a href="{% url 'football:home' %}"><span class="glyphicon glyphicon-home"></span> Trang chủ</a></li>
+        {% if user.is_authenticated %}
+        <li><a href="{% url 'football:predict' %}"><span class="glyphicon glyphicon-edit"></span> Dự đoán</a></li>
+        <li><a href="{% url 'football:result' %}"><span class="glyphicon glyphicon-star"></span> Bảng điểm</a></li>
+        {% endif %}
+        <li><a href="{% url 'football:rule' %}"><span class="glyphicon glyphicon-question-sign"></span> Luật chơi</a></li>
+     </ul>
+     <ul class="nav navbar-nav navbar-right">
+        {% if user.is_authenticated %}
+        <li><a href="{% url 'football:user' %}"><span class="glyphicon glyphicon-user"></span>  {{ user.username }}</a></li>
+        <li><a href="{% url 'password_change' %}"><span class="glyphicon glyphicon-cog"></span>  Đổi mật khẩu</a></li>
+        <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span>  Đăng xuất</a></li>
+        {% else %}
+        <li><a href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in"></span>  Đăng nhập</a></li>
+        {% endif %}
+     </ul>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="left">
+      <div class="bold"><p>1. Dự đoán</p></div>
+          <li>Dự đoán kết quả: người chơi bắt buộc phải tham gia dự đoán kết quả tất cả các trận đấu. Không dự đoán bị tính là dự đoán sai.</li>
+          <li>Dự đoán tỉ số: người chơi có thể không tham gia bằng cách không chọn tỉ số trận đấu khi tham gia dự đoán.</li>
+      <ul> </ul>
+      <div class="bold"><p>2. Cách tính $</p></div>
+          <li>Dự đoán kết quả: Nếu đúng người chơi không mất tiền cược trận đấu.</li>
+          <li>Dự đoán tỉ số: Nếu sai người chơi mất tiền cược trận đấu. Nếu đúng thì được nhận số tiền bằng tổng số tiền của người thua trong trận chia đều cho số người thắng.</li>
+      <ul> </ul>
+      <div class="bold"><p>3. Giải thưởng</p></div>
+          <li>Người có số lần dự đoán đúng nhiều nhất sẽ nhận giải. Nếu có nhiều hơn một người đạt giải thì số tiền thưởng sẽ được chia đều.</li>
+          <li>Số lần dự đoán đúng là tổng của số lần dự đoán kết quả đúng và số lần dự đoán tỉ số đúng.</li>
+          <li>Giải thưởng được tính bằng tổng số tiền thua cược tất cả các trận trừ đi tiền thắng cược của từng trận.</li>
+  </div>
+</div>
+</body>
+</html>

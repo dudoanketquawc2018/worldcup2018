@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <title>Dự đoán kết quả bóng đá</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+   <style>
+  .center {
+  padding: 200px 0;
+  font-size: 20px;
+  text-align: center;
+  }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-sm bg-light navbar-light">
+  <div class="container-fluid">
+     <ul class="nav navbar-nav">
+        <li><a href="{% url 'football:home' %}"><span class="glyphicon glyphicon-home"></span> Trang chủ</a></li>
+        {% if user.is_authenticated %}
+        <li><a href="{% url 'football:predict' %}"><span class="glyphicon glyphicon-edit"></span> Dự đoán</a></li>
+        <li><a href="{% url 'football:result' %}"><span class="glyphicon glyphicon-star"></span> Bảng điểm</a></li>
+        {% endif %}
+        <li><a href="{% url 'football:rule' %}"><span class="glyphicon glyphicon-question-sign"></span> Luật chơi</a></li>
+     </ul>
+     <ul class="nav navbar-nav navbar-right">
+        {% if user.is_authenticated %}
+        <li><a href="{% url 'football:user' %}"><span class="glyphicon glyphicon-user"></span>  {{ user.username }}</a></li>
+        <li><a href="{% url 'password_change' %}"><span class="glyphicon glyphicon-cog"></span>  Đổi mật khẩu</a></li>
+        <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span>  Đăng xuất</a></li>
+        {% else %}
+        <li><a href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in"></span>  Đăng nhập</a></li>
+        {% endif %}
+     </ul>
+  </div>
+</nav>
+
+<div class="container">
+{% if user_data %}
+   <table class="table table-hover">
+   <thead>
+      <tr class="info">
+          <th width="16%">Thời gian</th>
+          <th width="20%">Trận đấu</th>
+          <th width="16%">Tỉ số trận đấu</th>
+          <th width="16%">Dự đoán kết quả</th>
+          <th width="16%">Dự đoán tỉ số</th>
+          <th width="16%">Tổng số tiền</th>
+      </tr>
+   </thead>
+   <tbody>
+   {% for data in user_data %}
+      <tr class="active">
+          <th>{{data.schedule.match_date|date:"H:i dMY"}}</th>
+          <th>{{data.schedule.team_a}} - {{data.schedule.team_b}}</th>
+          {% if data.schedule.score_a > -1 %}
+              {% if data.schedule.score_b > -1 %}
+              <th>{{data.schedule.score_a}} : {{data.schedule.score_b}}</th>
+              {% else %}
+              <th>-</th>
+              {% endif %}
+          {% else %}
+          <th>-</th>
+          {% endif %}
+          {% if data.predict_winner == "AWIN" %}
+              <th>{{data.schedule.team_a}} thắng</th>
+          {% else %}
+              {% if data.predict_winner == "BWIN" %}
+              <th>{{data.schedule.team_b}} thắng</th>
+              {% else %}
+                  {% if data.predict_winner == "BALANCE" %}
+                  <th>Hai đội hòa</th>
+                  {% else %}
+                  <th>-</th>
+                  {% endif %}
+              {% endif %}
+          {% endif %}
+          {% if data.predict_score_a > -1 %}
+              {% if data.predict_score_b > -1 %}
+                  <th>{{data.predict_score_a}} : {{data.predict_score_b}}</th>
+              {% else %}
+                  <th>-</th>
+              {% endif %}
+          {% else %}
+              <th>-</th>
+          {%  endif %}
+          <th>{{data.reward}}$</th>
+      </tr>
+   {% endfor %}
+   </tbody>
+</table>
+{% else %}
+   <div class="center">
+       <p>Không có dữ liệu trận đấu</p>
+   </div>
+{% endif %}
+</div>
+</body>
+</html>
